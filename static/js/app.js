@@ -24,7 +24,26 @@ async function getWeather(city) {
   }
 }
 
+function themeFor(code, isDay) {
+  if (code >= 95) return { theme: "storm", icon: "⛈️" };
+  if ((code >= 71 && code <= 77) || code === 85 || code === 86) return { theme: "snow", icon: "❄️" };
+  if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return { theme: "rain", icon: "🌧️" };
+  if (code === 45 || code === 48) return { theme: "fog", icon: "🌫️" };
+  if (code === 3) return { theme: "cloudy", icon: "☁️" };
+  if (code === 1 || code === 2) return { theme: isDay ? "partly" : "night", icon: isDay ? "⛅" : "☁️" };
+  return isDay ? { theme: "sunny", icon: "☀️" } : { theme: "night", icon: "🌙" };
+}
+
 function renderWeather(w) {
+  const { theme, icon } = themeFor(w.weather_code, w.is_day);
+  resultsEl.dataset.theme = theme;
+  document.body.dataset.theme = theme;
+
+  const mainIcon = document.createElement("span");
+  mainIcon.className = "main-icon";
+  mainIcon.setAttribute("aria-hidden", "true");
+  mainIcon.textContent = icon;
+
   const title = document.createElement("h2");
   title.textContent = [w.city, w.country].filter(Boolean).join(", ");
 
@@ -37,17 +56,22 @@ function renderWeather(w) {
 
   const details = document.createElement("ul");
   details.className = "details";
-  for (const text of [
-    `Feels like: ${Math.round(w.feels_like)}°C`,
-    `Humidity: ${w.humidity}%`,
-    `Wind: ${w.wind_speed} km/h`,
+  for (const [glyph, text] of [
+    ["🌡️", `Feels like: ${Math.round(w.feels_like)}°C`],
+    ["💧", `Humidity: ${w.humidity}%`],
+    ["💨", `Wind: ${w.wind_speed} km/h`],
   ]) {
     const li = document.createElement("li");
-    li.textContent = text;
+    li.tabIndex = 0;
+    const g = document.createElement("span");
+    g.className = "detail-icon";
+    g.setAttribute("aria-hidden", "true");
+    g.textContent = glyph;
+    li.append(g, text);
     details.append(li);
   }
 
-  resultsEl.replaceChildren(title, temp, desc, details);
+  resultsEl.replaceChildren(mainIcon, title, temp, desc, details);
   resultsEl.hidden = false;
 }
 
