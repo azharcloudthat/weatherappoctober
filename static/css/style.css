@@ -169,3 +169,80 @@ footer a {
     flex-direction: column;
   }
 }
+
+/* Dynamic weather themes */
+body[data-theme] { transition: background 0.4s; }
+body[data-theme="sunny"] { background: #fff4d6; }
+body[data-theme="partly"] { background: #e8f1fa; }
+body[data-theme="cloudy"] { background: #e4e6e9; }
+body[data-theme="rain"] { background: #d5e2ee; }
+body[data-theme="storm"] { background: #cfcbdc; }
+body[data-theme="snow"] { background: #eef6fb; }
+body[data-theme="fog"] { background: #e9e8e6; }
+body[data-theme="night"] { background: #d3d8e8; }
+
+#results[data-theme="sunny"] { --card-accent: #f5a623; }
+#results[data-theme="partly"] { --card-accent: #5b9bd5; }
+#results[data-theme="cloudy"] { --card-accent: #7d8590; }
+#results[data-theme="rain"] { --card-accent: #3a78b5; }
+#results[data-theme="storm"] { --card-accent: #6a4fb0; }
+#results[data-theme="snow"] { --card-accent: #5ab4e0; }
+#results[data-theme="fog"] { --card-accent: #9a958f; }
+#results[data-theme="night"] { --card-accent: #4a5a9a; }
+
+#results[data-theme] { border-top: 4px solid var(--card-accent); }
+
+.main-icon {
+  display: inline-block;
+  font-size: 4rem;
+  line-height: 1;
+  animation: float 3s ease-in-out infinite;
+}
+
+.details {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.details li {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  background: var(--bg);
+  border: 1px solid var(--card-accent, var(--border));
+  border-radius: var(--radius);
+  cursor: default;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.details li:hover,
+.details li:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgb(0 0 0 / 0.12);
+  outline: none;
+}
+
+.details li:hover .detail-icon,
+.details li:focus-visible .detail-icon {
+  transform: scale(1.3) rotate(-8deg);
+}
+
+.detail-icon {
+  display: inline-block;
+  transition: transform 0.2s;
+}
+
+@keyframes float {
+  50% { transform: translateY(-6px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .main-icon { animation: none; }
+  .details li, .detail-icon { transition: none; }
+}
